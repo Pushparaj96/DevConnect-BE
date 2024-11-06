@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "connect with developers(backend)",
+  "main": "index.js",
+  "scripts": {
+    "start":"node src/app.js",
+    "dev":"nodemon src/app.js"
+  },
+  "keywords": [
+    "node.js",
+    "javascript"
+  ],
+  "author": "Pushparaj",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
