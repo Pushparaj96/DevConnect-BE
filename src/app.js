@@ -1,22 +1,19 @@
 const express = require("express");
+const connectDB = require("./config/database");
+
+
 
 const app = express();
 
 
-app.get("/user",(req,res,next)=>{
-    throw new Error ("can't get User route");
+connectDB()
+.then(()=>{
+    console.log("DB Connected Successfully...");
+    app.listen(6969,()=>{
+        console.log("Server Started Listening @ port:6969");
+        
+    })
 })
-
-app.get("/admin",(req,res)=>{
-    throw new Error ("can't get Admin Route");
-})
-
-app.use("/",(err,req,res,next)=>{
-    if(err){
-        res.status(500).send(err.message);
-    }
-})
-
-app.listen(6969,()=>{
-    console.log("DB Connected on Port : 6969");
+.catch((err)=>{
+    console.log(err.message);  
 })
