@@ -2,20 +2,14 @@ const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
 
-
-
 const app = express();
+
+app.use(express.json()) ; // express.json() middleware reads JSON and convert it into js Object on every Route
 
 app.post("/signup", async (req,res)=>{
 
-    const user = new User({ // instance of User model
-        firstName:"John",
-        lastName:"Joe",
-        emailId:"john@gmail.com",
-        password:"john@123",
-        age:24,
-        gender:"Male"
-    });
+    // instance of User model
+    const user = new User(req.body);
 
     try{
         await user.save(); // saving document into DB
