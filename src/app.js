@@ -2,28 +2,21 @@ const express = require("express");
 
 const app = express();
 
-const { adminAuth,userAuth} = require("./middlewares/auth");
 
-app.post("/user/login",(req,res)=>{
-    res.send("No auth needed");
+app.get("/user",(req,res,next)=>{
+    throw new Error ("can't get User route");
 })
 
-
-app.use("/admin",adminAuth);
-
-
-app.get("/user/dashboard",userAuth,(req,res)=>{
-    res.send("Fetched Dashboard Successfully");
+app.get("/admin",(req,res)=>{
+    throw new Error ("can't get Admin Route");
 })
 
-app.get("/admin/allusers",(req,res)=>{
-    res.send("Fetched all user details");
-});
-
-app.get("/admin/panel",(req,res)=>{
-    res.send("Fetched admin panel");
+app.use("/",(err,req,res,next)=>{
+    if(err){
+        res.status(500).send(err.message);
+    }
 })
 
-app.listen(3000,()=>{
-    console.log("Server started at port 3000");
+app.listen(6969,()=>{
+    console.log("DB Connected on Port : 6969");
 })
