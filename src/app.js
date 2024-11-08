@@ -15,6 +15,37 @@ app.get("/feed", async (req,res)=>{
     }
 });
 
+app.delete("/remove",async (req,res)=>{
+    try {
+        await User.findByIdAndDelete(req.body.userId);
+        res.send("Account Deleted")
+    } catch (error) {
+        res.status(400).send("Something Went Wrong");
+    }
+});
+
+app.patch("/update",async(req,res)=>{
+    try {
+        const updated =  await User.findByIdAndUpdate(req.body.userId,req.body,{returnDocument:"after"});
+        console.log(updated);
+        
+        res.send("Document updated!")
+        
+    } catch (error) {
+        res.status(400).send("Something Went Wrong!");
+    }
+})
+
+app.patch("/updateByEmail", async (req,res)=>{
+    try {
+        const updated = await User.findOneAndUpdate({emailId:req.body.emailId},req.body,{returnDocument:"after"});
+        console.log(updated);
+        res.send("document updated with emailId")
+    } catch (error) {
+        res.status(401).send("Something Went Wrong");
+    }
+})
+
 app.get("/byId", async (req,res)=>{
 
     try {
