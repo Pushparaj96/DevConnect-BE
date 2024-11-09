@@ -24,9 +24,20 @@ app.delete("/remove",async (req,res)=>{
     }
 });
 
-app.patch("/update",async(req,res)=>{
+app.patch("/update/:userId",async(req,res)=>{
+    const userId = req.params?.userId;
+    const data = req.body;
+    const reqFieldUpdate = Object.keys(data);
+    const allowedFields = ["skills","photoUrl","bio"];
+
     try {
-        const updated =  await User.findByIdAndUpdate(req.body.userId,req.body,{returnDocument:"after",runValidators:true});
+         // every() method returns true if requested fields for update are allowed fields
+        const isValidRequest = reqFieldUpdate.every(field=>allowedFields.includes(field));
+
+        // if invalid request , it will throw error
+        if(!isValidRequest) throw new Error ("Invalid Update Request!");
+            
+        const updated =  await User.findByIdAndUpdate(userId,data,{returnDocument:"after",runValidators:true});
         console.log(updated);
         
         res.send("Document updated!")
