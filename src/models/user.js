@@ -45,7 +45,15 @@ const userSchema = new mongoose.Schema({
         max:80
     },
     gender:{
-        type:String
+        type:String,
+        lowercase:true,
+        maxLength:10,
+        validate(value){
+            const allowedGender = ["male","female","others"];
+            if(!allowedGender.includes(value)){
+                throw new Error ("Please Enter valid Gender");
+            }
+        }
     },
     bio:{
         type:String,
@@ -57,7 +65,12 @@ const userSchema = new mongoose.Schema({
         maxLength:255,
     },
     skills:{
-        type:[String]
+        type:[String],
+        validate(value){
+            if(value.length > 25){
+                throw new Error ("enter valid skills , can't be more than 25 skills");
+            }
+        }
     }
 },{timestamps:true});
 
