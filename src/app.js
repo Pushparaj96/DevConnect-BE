@@ -11,7 +11,7 @@ app.get("/feed", async (req,res)=>{
         const users = await User.find({});
         res.send(users);
     }catch(err){
-        res.status(401).send("Something went Wrong");
+        res.status(401).send("Something went Wrong"+err.message);
     }
 });
 
@@ -20,29 +20,29 @@ app.delete("/remove",async (req,res)=>{
         await User.findByIdAndDelete(req.body.userId);
         res.send("Account Deleted")
     } catch (error) {
-        res.status(400).send("Something Went Wrong");
+        res.status(400).send("Something Went Wrong"+error.message);
     }
 });
 
 app.patch("/update",async(req,res)=>{
     try {
-        const updated =  await User.findByIdAndUpdate(req.body.userId,req.body,{returnDocument:"after"});
+        const updated =  await User.findByIdAndUpdate(req.body.userId,req.body,{returnDocument:"after",runValidators:true});
         console.log(updated);
         
         res.send("Document updated!")
         
     } catch (error) {
-        res.status(400).send("Something Went Wrong!");
+        res.status(400).send("Something Went Wrong! - " + error.message);
     }
 })
 
 app.patch("/updateByEmail", async (req,res)=>{
     try {
-        const updated = await User.findOneAndUpdate({emailId:req.body.emailId},req.body,{returnDocument:"after"});
+        const updated = await User.findOneAndUpdate({emailId:req.body.emailId},req.body,{returnDocument:"after",runValidators:true});
         console.log(updated);
         res.send("document updated with emailId")
     } catch (error) {
-        res.status(401).send("Something Went Wrong");
+        res.status(401).send("Something Went Wrong"+error.message);
     }
 })
 
@@ -53,7 +53,7 @@ app.get("/byId", async (req,res)=>{
             res.send(user);
         
     } catch (error) {
-        res.status(401).send("Something Went Wrong");
+        res.status(401).send("Something Went Wrong"+error.message);
     }
         
 })
@@ -67,7 +67,7 @@ app.get("/user", async(req,res)=>{
             res.send(users);
         }    
     } catch (error) {
-            res.status(400).send("something went Wrong");
+            res.status(400).send("something went Wrong"+error.message);
     }
 })
 
@@ -80,7 +80,7 @@ app.post("/signup", async (req,res)=>{
         await user.save(); // saving document into DB
         res.send("Signup Successful");
     }catch(err){
-        res.status(400).send("Failed to Signup");
+        res.status(400).send("Failed to Signup - "+ err.message);
     }
 })
 
