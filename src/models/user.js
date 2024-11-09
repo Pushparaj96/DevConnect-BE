@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -63,6 +64,11 @@ const userSchema = new mongoose.Schema({
     photoUrl:{
         type:String,
         maxLength:255,
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error ("invalid URL");
+            }
+        }
     },
     skills:{
         type:[String],
