@@ -107,7 +107,27 @@ app.post("/signup", async (req,res)=>{
         await user.save(); 
         res.send("Signup Successful");
     }catch(err){
-        res.status(400).send("Failed to Signup - "+ err.message);
+        res.status(400).send("ERR - "+ err.message);
+    }
+});
+
+app.post("/login",async (req,res)=>{
+    const {emailId,password} = req.body;
+    try {
+        const user = await User.findOne({emailId:emailId});
+        if(!user){
+            throw new Error("Invalid Credentials!");
+        }
+
+        const isValidUser = await bcrypt.compare(password,user.password);
+        if(!isValidUser){
+            throw new Error("Invalid Credentials!");
+        }
+
+        res.send("Login Successfull !");
+        
+    } catch (error) {
+        res.status(400).send("ERR-"+error.message);
     }
 })
 
