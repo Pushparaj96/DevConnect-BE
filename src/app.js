@@ -1,6 +1,8 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
+const { validateSignup } = require("./utils/validate");
+const bcrypt = require("bcrypt");
 
 const app = express();
 
@@ -83,12 +85,26 @@ app.get("/user", async(req,res)=>{
 })
 
 app.post("/signup", async (req,res)=>{
-
-    // instance of User model
-    const user = new User(req.body);
-
+    
     try{
-        await user.save(); // saving document into DB
+
+        // validate data from req
+        validateSignup(req);
+        const { firstName,lastName,emailId,password } = req.body;
+
+        // Hashing the Password 
+        const hashedPassword = await bcrypt.hash(password,10);
+
+        // instance of User model
+      const user = new User({
+        firstName:firstName,
+        lastName:lastName,
+        emailId:emailId,
+        password:hashedPassword
+      });
+
+         // saving document into DB
+        await user.save(); 
         res.send("Signup Successful");
     }catch(err){
         res.status(400).send("Failed to Signup - "+ err.message);

@@ -29,16 +29,7 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        minLength:8,
-        maxLength:15,
-        required:true,
-        trim:true,
-        validate(value){
-            const passwordRegEx = /^(?!.*\s)(?=.*\d)(?=.*\W)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d\W]{8,15}$/ ;
-            if(!passwordRegEx.test(value)){
-                throw new Error("Weak Password - must include one [upper & lower & digit & special chars]");
-            }
-        }
+        required:true
     },
     age:{
         type:Number,
