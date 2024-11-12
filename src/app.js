@@ -5,6 +5,7 @@ const { validateSignup } = require("./utils/validate");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
 
 const app = express();
 
@@ -139,18 +140,22 @@ app.post("/login",async (req,res)=>{
     }
 });
 
-app.get("/profile",async(req,res)=>{
+app.get("/profile", userAuth , async(req,res)=>{
     try {
-        const cookies = req.cookies;
-        const {token} = cookies;
-        const decoded = jwt.verify(token,"DevConnect#69");
-        const {_id} = decoded;
-
-        const user = await User.findById(_id);
+        const user = req.user;
         res.send(user);
         
     } catch (error) {
         res.status(400).send("ERR -"+error.message);
+    }
+});
+
+app.post("/connectionRequest",userAuth,(req,res)=>{
+    try {
+        const user = req.user;
+        res.send(user.firstName + " " + "Sent Friend Request!")
+    } catch (error) {
+        res.status(400).send("ERR-"+error.message);
     }
 })
 
