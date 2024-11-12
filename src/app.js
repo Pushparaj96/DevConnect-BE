@@ -127,7 +127,7 @@ app.post("/login",async (req,res)=>{
             throw new Error("Invalid Credentials!");
         }
         // validating password using Schema methods
-        const isValidPassword = await user.validatePassword(password);
+        const isValidPassword = await user.comparePassword(password);
 
         if(!isValidPassword){
             throw new Error("Invalid Credentials!");

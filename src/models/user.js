@@ -80,7 +80,7 @@ userSchema.methods.createJwtToken = function (){
     return token;
 }
 
-userSchema.methods.validatePassword = async function (loginPassword){
+userSchema.methods.comparePassword = async function (loginPassword){
     const user = this;
     const {password:hashedDbPassword} = user;
     const isValidPassword = await bcrypt.compare(loginPassword,hashedDbPassword);
