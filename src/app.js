@@ -3,10 +3,15 @@ const connectDB = require("./config/database");
 const User = require("./models/user");
 const { validateSignup } = require("./utils/validate");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
-app.use(express.json()) ; // express.json() middleware reads JSON and convert it into js Object on every Route
+// express.json() middleware reads JSON and convert it into js Object on every Route
+app.use(express.json()) ; 
+// reads cookies 
+app.use(cookieParser());
 
 app.get("/feed", async (req,res)=>{
     try{
@@ -124,10 +129,28 @@ app.post("/login",async (req,res)=>{
             throw new Error("Invalid Credentials!");
         }
 
+        const token = jwt.sign({_id:user._id},"DevConnect#69");
+
+        res.cookie("token",token);
         res.send("Login Successfull !");
         
     } catch (error) {
         res.status(400).send("ERR-"+error.message);
+    }
+});
+
+app.get("/profile",async(req,res)=>{
+    try {
+        const cookies = req.cookies;
+        const {token} = cookies;
+        const decoded = jwt.verify(token,"DevConnect#69");
+        const {_id} = decoded;
+
+        const user = await User.findById(_id);
+        res.send(user);
+        
+    } catch (error) {
+        res.status(400).send("ERR -"+error.message);
     }
 })
 
