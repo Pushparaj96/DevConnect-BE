@@ -119,18 +119,21 @@ app.post("/signup", async (req,res)=>{
 
 app.post("/login",async (req,res)=>{
     const {emailId,password} = req.body;
+
     try {
+
         const user = await User.findOne({emailId:emailId});
         if(!user){
             throw new Error("Invalid Credentials!");
         }
+        // validating password using Schema methods
+        const isValidPassword = await user.validatePassword(password);
 
-        const isValidUser = await bcrypt.compare(password,user.password);
-        if(!isValidUser){
+        if(!isValidPassword){
             throw new Error("Invalid Credentials!");
         }
-
-        const token = jwt.sign({_id:user._id},"DevConnect#69",{expiresIn:"4d"});
+        // signing jwt token using Schema methods
+        const token = await user.createJwtToken();
 
         res.cookie("token",token,{expires:new Date(Date.now() + (4 * 86400 * 1000))});
         res.send("Login Successfull !");
