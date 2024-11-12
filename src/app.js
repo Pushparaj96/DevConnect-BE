@@ -130,9 +130,9 @@ app.post("/login",async (req,res)=>{
             throw new Error("Invalid Credentials!");
         }
 
-        const token = jwt.sign({_id:user._id},"DevConnect#69");
+        const token = jwt.sign({_id:user._id},"DevConnect#69",{expiresIn:"4d"});
 
-        res.cookie("token",token);
+        res.cookie("token",token,{expires:new Date(Date.now() + (4 * 86400 * 1000))});
         res.send("Login Successfull !");
         
     } catch (error) {
