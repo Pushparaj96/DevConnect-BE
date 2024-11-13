@@ -19,7 +19,31 @@ const validateProfileEditData = (req)=>{
     return isValidEditRequest;
 }
 
+const validateChangePassword = (req) =>{
+
+    const allowedFields = ["password","confirmPassword"];
+    const isValidRequest = Object.keys(req.body).every(field=>allowedFields.includes(field));
+
+    if(!isValidRequest){
+        throw new Error ("Invalid Request!");
+    }
+
+    const { password , confirmPassword } = req.body;
+
+    if( !validator.isStrongPassword(password)){
+        throw new Error ("Please Enter Strong Password");
+    }
+
+    if( password !== confirmPassword ){
+        throw new Error ("Passwords Should Match!");
+    }
+
+    return true;
+
+}
+
 module.exports = {
     validateSignup,
-    validateProfileEditData
+    validateProfileEditData,
+    validateChangePassword
 }
