@@ -24,10 +24,10 @@ requestRouter.post("/request/send/:status/:receiverId",userAuth, async (req,res)
             return res.status(404).json({message:`User Not Found - can't Send Request!`})
         }
 
-        const isExistingRequest = await ConnectionRequest.findOne({$or:[{senderId,receiverId,status:"interested"},{senderId:receiverId,receiverId:senderId,status:"interested"}]});
+        const isExistingRequest = await ConnectionRequest.findOne({$or:[{senderId,receiverId,status:"interested"},{senderId,receiverId,status:"ignored"},{senderId:receiverId,receiverId:senderId,status:"interested"}]});
 
         if(isExistingRequest){
-            return res.status(400).json({message:`This Request is Already There ! check Your pending Requests...`});
+            return res.status(400).json({message:`Already Requested | Rejected this user ! check Your pending Requests...`});
         }
 
         const connections = new ConnectionRequest({
@@ -44,6 +44,38 @@ requestRouter.post("/request/send/:status/:receiverId",userAuth, async (req,res)
         res.status(400).send("ERR-"+error.message);
     }
 });
+
+requestRouter.post("/request/review/:status/:connectionId",userAuth,async(req,res)=>{
+    try {
+        const { status , connectionId } = req.params;
+        const allowedStatus = ["accepted","rejected"];
+        const loggedInUser = req.user;
+
+        if(!allowedStatus.includes(status)){
+            throw new Error ("Invalid Request Status!");
+        }
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id:connectionId,
+            receiverId:loggedInUser._id,
+            status:"interested"
+        });
+
+        if(!connectionRequest){
+            throw new Error ("Sorry , Request Not Found !");
+        }
+
+        connectionRequest.status = status;
+        const data = await connectionRequest.save();
+
+        const { senderId } = data;
+        const senderObj = await User.findById(senderId);
+        const { firstName:senderName } = senderObj;
+
+        res.json({message:`${loggedInUser.firstName} ${status} ${senderName} request!`,data});
+    } catch (error) {
+        res.status(400).send("Err - "+ error.message);
+    }
+})
 
 
 

@@ -13,7 +13,7 @@ const connectionRequestSchema = new Schema({
         type:String,
         required:true,
         enum:{
-            values:["interested","ignored","pending","accepted"],
+            values:["interested","ignored","pending","accepted","rejected"],
             message:`{VALUE} is invalid!`
         }
     }
