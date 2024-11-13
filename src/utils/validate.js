@@ -1,4 +1,5 @@
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 
 const validateSignup = (req)=>{
     const {firstName,lastName,emailId,password} = req.body;
@@ -19,26 +20,33 @@ const validateProfileEditData = (req)=>{
     return isValidEditRequest;
 }
 
-const validateChangePassword = (req) =>{
+const validateChangePassword = async (req,user) =>{
 
-    const allowedFields = ["password","confirmPassword"];
+    const { password:dbPassword } = user;
+    const { oldPassword , newPassword , confirmPassword } = req.body;
+
+    // validating the requested fields ...
+
+    const allowedFields = ["oldPassword","newPassword","confirmPassword"];
     const isValidRequest = Object.keys(req.body).every(field=>allowedFields.includes(field));
-
+    
     if(!isValidRequest){
         throw new Error ("Invalid Request!");
     }
 
-    const { password , confirmPassword } = req.body;
+    // comparing old password with db password
+    const isOldPasswordValid = await bcrypt.compare(oldPassword,dbPassword);
 
-    if( !validator.isStrongPassword(password)){
+    if(!isOldPasswordValid){
+        throw new Error ("Incorrect Old Password !");
+    }else if( !validator.isStrongPassword(newPassword)){
         throw new Error ("Please Enter Strong Password");
-    }
-
-    if( password !== confirmPassword ){
+    }else if( newPassword !== confirmPassword ){
         throw new Error ("Passwords Should Match!");
     }
 
-    return true;
+    const updatedPasswordHash = await bcrypt.hash(confirmPassword,10);
+    return updatedPasswordHash;
 
 }
 

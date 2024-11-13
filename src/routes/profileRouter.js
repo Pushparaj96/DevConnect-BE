@@ -1,7 +1,6 @@
 const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const { validateProfileEditData , validateChangePassword } = require("../utils/validate");
-const bcrypt = require("bcrypt");
 
 
 
@@ -40,17 +39,16 @@ profileRouter.patch("/profile/edit",userAuth,async (req,res)=>{
     }
 });
 
-profileRouter.patch("/profile/forgot",userAuth,async(req,res)=>{
+profileRouter.patch("/profile/changePassword",userAuth,async(req,res)=>{
     try {
         const user = req.user;
-        const isvalidRequest = validateChangePassword(req);
-        if(isvalidRequest){
-            const {confirmPassword:changedPassword} = req.body;
-            const changedPasswordHash = await bcrypt.hash(changedPassword,10);
-            user.password = changedPasswordHash;
-            await user.save();
-            res.json({message:`${user.firstName} , your password changed Successfully!`,data:user})
+        const changedPasswordHash = await validateChangePassword(req,user);
+        if(!changedPasswordHash){
+            throw new Error(" unexpected Error in changing password!")
         }
+        user.password = changedPasswordHash;
+        await user.save();
+        res.json({message:`${user.firstName} , Your Password changed Successfully!`,data:user});
     } catch (error) {
         res.status(400).send("ERR - " + error.message);
     }
