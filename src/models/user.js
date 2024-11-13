@@ -42,12 +42,16 @@ const userSchema = new mongoose.Schema({
         type:String,
         lowercase:true,
         maxLength:10,
-        validate(value){
-            const allowedGender = ["male","female","others"];
-            if(!allowedGender.includes(value)){
-                throw new Error ("Please Enter valid Gender");
-            }
+        enum:{
+            values:["male","female","others"],
+            message:`{VALUE} is invalid`
         }
+        // validate(value){
+        //     const allowedGender = ["male","female","others"];
+        //     if(!allowedGender.includes(value)){
+        //         throw new Error ("Please Enter valid Gender");
+        //     }
+        // }
     },
     bio:{
         type:String,
