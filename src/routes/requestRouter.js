@@ -8,10 +8,9 @@ const requestRouter = express.Router();
 
 requestRouter.post("/request/send/:status/:userId",userAuth, async (req,res)=>{
     try {
-        const user = req.user;
-        const senderId = user._id;
-        const receiverId = req.params.userId;
-        const status = req.params.status;
+        const {_id,firstName} = req.user;
+        const senderId = _id;
+        const { receiverId , status } = req.params;
         const connections = new ConnectionRequest({
             senderId,
             receiverId,
@@ -20,7 +19,7 @@ requestRouter.post("/request/send/:status/:userId",userAuth, async (req,res)=>{
 
         const data = await connections.save();
 
-        res.json({message:`${user.firstName} sent Friend Request!`,data});
+        res.json({message:`${firstName} sent Friend Request!`,data});
     } catch (error) {
         res.status(400).send("ERR-"+error.message);
     }
