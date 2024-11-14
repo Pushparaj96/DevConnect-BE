@@ -41,6 +41,12 @@ userRouter.get("/user/connections",userAuth, async (req,res)=>{
 
 userRouter.get("/user/feed",userAuth,async (req,res)=>{
     try {
+        
+        let page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = (limit>50) ? 50 : limit; // to limit no of documents
+        const skip = (page-1)*limit; // to skip documents dynamically on each page
+
         const loggendInUser = req.user;
         const oldConnections = await ConnectionRequests.find(
             {$or:[{senderId:loggendInUser._id},{receiverId:loggendInUser._id}]}).select("senderId receiverId");
@@ -55,7 +61,9 @@ userRouter.get("/user/feed",userAuth,async (req,res)=>{
 
         const hideFromFeed = Array.from(alreadyConnectedUsers);
 
-        const showInFeed = await User.find({$and:[{_id:{$nin:hideFromFeed}},{_id:{$ne:loggendInUser._id}}]}).select(SAFE_TO_SHOW_USER_DATA);
+        const showInFeed = await User.find({$and:
+            [{_id:{$nin:hideFromFeed}},{_id:{$ne:loggendInUser._id}}]}).select(SAFE_TO_SHOW_USER_DATA).skip(skip).limit(limit);
+
 
         res.json({message:`${loggendInUser.firstName} - Feed`,data:showInFeed});
     } catch (error) {
