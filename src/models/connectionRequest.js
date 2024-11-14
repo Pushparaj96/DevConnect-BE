@@ -3,11 +3,13 @@ const { Schema , model } = require("mongoose");
 const connectionRequestSchema = new Schema({
     senderId:{
         type:Schema.Types.ObjectId,
-        required:true
+        required:true,
+        ref:"User"
     },
     receiverId:{
         type:Schema.Types.ObjectId,
-        required:true
+        required:true,
+        ref:"User"
     },
     status:{
         type:String,
