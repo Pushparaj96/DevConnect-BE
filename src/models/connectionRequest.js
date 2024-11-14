@@ -4,7 +4,7 @@ const connectionRequestSchema = new Schema({
     senderId:{
         type:Schema.Types.ObjectId,
         required:true,
-        ref:"User"
+        ref:"User" // reference to User collection
     },
     receiverId:{
         type:Schema.Types.ObjectId,

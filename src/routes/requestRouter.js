@@ -24,10 +24,10 @@ requestRouter.post("/request/send/:status/:receiverId",userAuth, async (req,res)
             return res.status(404).json({message:`User Not Found - can't Send Request!`})
         }
 
-        const isExistingRequest = await ConnectionRequest.findOne({$or:[{senderId,receiverId,status:"interested"},{senderId,receiverId,status:"ignored"},{senderId:receiverId,receiverId:senderId,status:"interested"}]});
+        const isExistingRequest = await ConnectionRequest.findOne({$or:[{senderId,receiverId,status:"interested"},{senderId,receiverId,status:"ignored"},{senderId:receiverId,receiverId:senderId,status:"interested"},{senderId,receiverId,status:"accepted"},{senderId:receiverId,receiverId:senderId,status:"accepted"}]});
 
         if(isExistingRequest){
-            return res.status(400).json({message:`Already Requested | Rejected this user ! check Your pending Requests...`});
+            return res.status(400).json({message:`Can't send Request , check Your pending Requests or Connections...`});
         }
 
         const connections = new ConnectionRequest({
