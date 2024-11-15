@@ -5,9 +5,15 @@ const authRouter = require("./routes/authRouter");
 const profileRouter = require("./routes/profileRouter");
 const requestRouter = require("./routes/requestRouter");
 const userRouter = require("./routes/userRouter");
+const cors = require("cors");
 
 const app = express();
 
+// to solve cors issue
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}));
 // express.json() middleware reads JSON and convert it into js Object on every Route
 app.use(express.json()) ; 
 // reads cookies 
