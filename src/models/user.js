@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema({
     photoUrl:{
         type:String,
         maxLength:255,
+        default:"https://media.istockphoto.com/id/1399249601/vector/black-line-icon-man-default-profile-avatar-businessman-silhouette-male-mark-trendy-flat.jpg?s=612x612&w=0&k=20&c=ExYCFwu1Qe7vE915rX6VNiONRPo5Qo99fJULa8A1egc=",
         validate(value){
             if(!validator.isURL(value)){
                 throw new Error ("invalid URL");
