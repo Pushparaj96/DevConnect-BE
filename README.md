@@ -36,6 +36,7 @@ DevConnect is a modern MERN (MongoDB, Express.js, React.js, Node.js) stack appli
 
 ### Frontend
 - **React.js**: Frontend library for building the user interface.
+- **Redux**: State management library for predictable and centralized state handling.
 - **Tailwind CSS**: Utility-first CSS framework for responsive and modern design.
 - **DaisyUI**: Component library built on Tailwind for faster UI development.
 - **Yup**: Schema-based validation for user inputs.
